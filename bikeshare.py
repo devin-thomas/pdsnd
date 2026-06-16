@@ -1,10 +1,33 @@
 import time
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
 
 CITY_DATA = { 'chicago': 'chicago.csv',
               'new york city': 'new_york_city.csv',
               'washington': 'washington.csv' }
+MONTH_OPTIONS = ['all', 'january', 'february', 'march', 'april', 'may', 'june']
+DAY_OPTIONS = ['all', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday',
+               'saturday', 'sunday']
+
+
+def get_available_cities():
+    """Returns the cities with CSV files available in the local project."""
+    available = [city for city, filename in CITY_DATA.items() if Path(filename).exists()]
+    return available or list(CITY_DATA)
+
+
+def prompt_for_choice(label, options):
+    """Prompts until the user enters one of the allowed lowercase options."""
+    options_text = ', '.join(options)
+
+    while True:
+        value = input(f'Please choose a {label} ({options_text}):\n').strip().lower()
+        if value in options:
+            return value
+
+        print(f"Sorry, '{value}' is not a valid {label}. Please try again.")
 
 def get_filters():
     """
@@ -16,14 +39,9 @@ def get_filters():
         (str) day - name of the day of week to filter by, or "all" to apply no day filter
     """
     print('Hello! Let\'s explore some US bikeshare data!')
-    # get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
-
-
-    # get user input for month (all, january, february, ... , june)
-
-
-    # get user input for day of week (all, monday, tuesday, ... sunday)
-
+    city = prompt_for_choice('city', get_available_cities())
+    month = prompt_for_choice('month', MONTH_OPTIONS)
+    day = prompt_for_choice('day', DAY_OPTIONS)
 
     print('-'*40)
     return city, month, day
