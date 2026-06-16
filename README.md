@@ -34,3 +34,7 @@ time, station, trip duration, and user statistics.
 - `bikeshare.py`: command-line analysis script
 - `new_york_city.csv`: sample city data kept out of version control
 - `README.md`: project documentation
+
+## Credits
+- Udacity's Programming for Data Science with Python course provided the
+  original bikeshare starter project and assignment workflow.
