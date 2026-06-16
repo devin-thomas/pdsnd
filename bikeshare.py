@@ -47,6 +47,39 @@ def get_filters():
     return city, month, day
 
 
+def load_city_data(city):
+    """Loads a city CSV and prepares the datetime columns used in analysis."""
+    file_path = Path(CITY_DATA[city])
+    if not file_path.exists():
+        raise FileNotFoundError(
+            f"Could not find '{file_path.name}' in the project directory."
+        )
+
+    df = pd.read_csv(file_path)
+    df['Start Time'] = pd.to_datetime(df['Start Time'])
+    df['month'] = df['Start Time'].dt.month
+    df['day_of_week'] = df['Start Time'].dt.day_name().str.lower()
+    df['start_hour'] = df['Start Time'].dt.hour
+    return df
+
+
+def filter_by_month(df, month):
+    """Returns a filtered DataFrame for the selected month when requested."""
+    if month == 'all':
+        return df
+
+    month_number = MONTH_OPTIONS.index(month)
+    return df[df['month'] == month_number]
+
+
+def filter_by_day(df, day):
+    """Returns a filtered DataFrame for the selected day when requested."""
+    if day == 'all':
+        return df
+
+    return df[df['day_of_week'] == day]
+
+
 def load_data(city, month, day):
     """
     Loads data for the specified city and filters by month and day if applicable.
@@ -58,8 +91,9 @@ def load_data(city, month, day):
     Returns:
         df - Pandas DataFrame containing city data filtered by month and day
     """
-
-
+    df = load_city_data(city)
+    df = filter_by_month(df, month)
+    df = filter_by_day(df, day)
     return df
 
 
