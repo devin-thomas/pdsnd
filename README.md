@@ -19,3 +19,13 @@ in this repository as part of the Git and GitHub workflow assignment.
 - Python 3
 - pandas
 - numpy
+
+## Usage
+Run the script from the project directory:
+
+```bash
+python bikeshare.py
+```
+
+The program prompts for a city, month, and day filter before printing travel
+time, station, trip duration, and user statistics.
