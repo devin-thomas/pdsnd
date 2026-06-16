@@ -29,3 +29,8 @@ python bikeshare.py
 
 The program prompts for a city, month, and day filter before printing travel
 time, station, trip duration, and user statistics.
+
+## Files used
+- `bikeshare.py`: command-line analysis script
+- `new_york_city.csv`: sample city data kept out of version control
+- `README.md`: project documentation
