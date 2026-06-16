@@ -2,7 +2,6 @@ import time
 from pathlib import Path
 
 import pandas as pd
-import numpy as np
 
 CITY_DATA = { 'chicago': 'chicago.csv',
               'new york city': 'new_york_city.csv',
@@ -80,6 +79,17 @@ def filter_by_day(df, day):
     return df[df['day_of_week'] == day]
 
 
+def get_mode(series):
+    """Returns the most common value from a Series."""
+    return series.mode().iat[0]
+
+
+def print_counts(series):
+    """Prints value counts in a simple label and count format."""
+    for label, count in series.value_counts().items():
+        print(f'{label}: {count}')
+
+
 def load_data(city, month, day):
     """
     Loads data for the specified city and filters by month and day if applicable.
@@ -103,14 +113,13 @@ def time_stats(df):
     print('\nCalculating The Most Frequent Times of Travel...\n')
     start_time = time.time()
 
-    # display the most common month
+    common_month = MONTH_OPTIONS[get_mode(df['month'])]
+    common_day = get_mode(df['day_of_week']).title()
+    common_hour = get_mode(df['start_hour'])
 
-
-    # display the most common day of week
-
-
-    # display the most common start hour
-
+    print(f'Most common month: {common_month.title()}')
+    print(f'Most common day of week: {common_day}')
+    print(f'Most common start hour: {common_hour}')
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -122,14 +131,13 @@ def station_stats(df):
     print('\nCalculating The Most Popular Stations and Trip...\n')
     start_time = time.time()
 
-    # display most commonly used start station
+    common_start_station = get_mode(df['Start Station'])
+    common_end_station = get_mode(df['End Station'])
+    common_trip = get_mode(df['Start Station'] + ' -> ' + df['End Station'])
 
-
-    # display most commonly used end station
-
-
-    # display most frequent combination of start station and end station trip
-
+    print(f'Most commonly used start station: {common_start_station}')
+    print(f'Most commonly used end station: {common_end_station}')
+    print(f'Most frequent trip: {common_trip}')
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -141,11 +149,11 @@ def trip_duration_stats(df):
     print('\nCalculating Trip Duration...\n')
     start_time = time.time()
 
-    # display total travel time
+    total_travel_time = df['Trip Duration'].sum()
+    mean_travel_time = df['Trip Duration'].mean()
 
-
-    # display mean travel time
-
+    print(f'Total travel time: {total_travel_time:.0f} seconds')
+    print(f'Average travel time: {mean_travel_time:.2f} seconds')
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -157,14 +165,27 @@ def user_stats(df):
     print('\nCalculating User Stats...\n')
     start_time = time.time()
 
-    # Display counts of user types
+    print('User Types:')
+    print_counts(df['User Type'])
+    print()
 
+    if 'Gender' in df.columns:
+        print('Gender:')
+        print_counts(df['Gender'])
+        print()
+    else:
+        print('Gender data is not available for this city.\n')
 
-    # Display counts of gender
-
-
-    # Display earliest, most recent, and most common year of birth
-
+    if 'Birth Year' in df.columns:
+        birth_years = df['Birth Year'].dropna()
+        if not birth_years.empty:
+            print(f'Earliest birth year: {int(birth_years.min())}')
+            print(f'Most recent birth year: {int(birth_years.max())}')
+            print(f'Most common birth year: {int(get_mode(birth_years))}')
+        else:
+            print('Birth year data is not available for this selection.')
+    else:
+        print('Birth year data is not available for this city.')
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
